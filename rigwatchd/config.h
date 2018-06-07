@@ -13,7 +13,7 @@
  * spaces at the end of line becme part of val
  */
 
-#define CONFIG_FILE "/home/filip/Priv/RigWatch-daemon/rigwatchd.conf"
+#define CONFIG_FILE "./rigwatchd.conf"
 
 typedef enum {
 	NOSYSYSTEM,
@@ -23,18 +23,16 @@ typedef enum {
 
 typedef enum {
 	NOMINER,
-	ETHMINER
+	CLAYMORE
 } Miner;
 
 char *rigName;
 char *panelHost;
-int panelPort;
-int pollInterval;
-int sendInterval;
+char* panelPort;
 System systemType;
 Miner minerType;
 char *minerHost;
-int minerPort;
+char* minerPort;
 
 bool reportMining;
 bool reportSystem;

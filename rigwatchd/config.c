@@ -5,13 +5,11 @@
 
 char *rigName = "";
 char *panelHost = "";
-int panelPort = 80;
-int pollInterval = 5;
-int sendInterval = 5;
+char* panelPort = "80";
 System systemType;
 Miner minerType;
 char *minerHost = "";
-int minerPort = 0;
+char* minerPort = "";
 
 bool reportMining = true;
 bool reportSystem = true;
@@ -45,19 +43,20 @@ void confInit(){
 			panelHost = (char*) malloc(strlen(val)+1);
 			strcpy(panelHost, val);
 		}
-		else if(strcmp(key, "panel_port") == 0) sscanf(val, "%d", &panelPort);
-		else if(strcmp(key, "update_interval") == 0) sscanf(val, "%d", &pollInterval);
-		else if(strcmp(key, "send_interval") == 0) sscanf(val, "%d", &sendInterval);
-		else if(strcmp(key, "miner_host") == 0){
+		else if(strcmp(key, "panel_port") == 0){
+			panelPort = (char*) malloc(strlen(val)+1);
+			strcpy(panelPort, val);
+		}else if(strcmp(key, "miner_host") == 0){
 			minerHost = (char*) malloc(strlen(val)+1);
 			strcpy(minerHost, val);
-		}
-		else if(strcmp(key, "miner_port") == 0) sscanf(val, "%d", &minerPort);
-		else if(strcmp(key, "system") == 0){
+		}else if(strcmp(key, "miner_port") == 0){
+			minerPort = (char*) malloc(strlen(val)+1);
+			strcpy(minerPort, val);
+		}else if(strcmp(key, "system") == 0){
 			if(strcmp(val, "amd") == 0) systemType = AMD;
 			else if(strcmp(val, "nvidia") == 0) systemType = NVIDIA;
 		}else if(strcmp(key, "miner") == 0){
-			if(strcmp(val, "ethminer") == 0) minerType = ETHMINER;
+			if(strcmp(val, "claymore") == 0) minerType = CLAYMORE;
 		}
 
 
