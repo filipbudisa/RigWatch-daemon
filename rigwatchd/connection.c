@@ -46,11 +46,17 @@ bool rSend(char* data, size_t len){
 	return true;
 }
 
-bool rigSend(uint32_t report, char* data){
+bool rigSend(uint32_t report, char* data, uint8_t action){
 	size_t len = strlen(data);
 
 	char preData[500];
-	size_t preDataLen = sprintf(preData, "data;%s;%u", rigName, report);
+	size_t preDataLen;
+
+	if(action == 0){
+		preDataLen = sprintf(preData, "report;%s;%u", rigName, report);
+	}else{
+		preDataLen = sprintf(preData, "data;%s;%u", rigName, report);
+	}
 
 	char* buf = malloc((len+preDataLen)*sizeof(char));
 	memset(buf, 0, (4+len+preDataLen)*sizeof(char));

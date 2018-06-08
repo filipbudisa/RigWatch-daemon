@@ -63,11 +63,12 @@ int main(int argc, char* argv[]){
 	while((code = rigReceive(&report)) != -1){
 		switch(code){
 			case 0:
+			case 1:
 				data = clayGet();
-				rigSend(report, data);
+				rigSend(report, data, code);
 				free(data);
 				break;
-			case 1:
+			case 2:
 				break;
 		}
 	}
