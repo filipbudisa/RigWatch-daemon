@@ -59,7 +59,7 @@ bool rigSend(uint32_t report, char* data, uint8_t action){
 	}
 
 	char* buf = malloc((len+preDataLen)*sizeof(char));
-	memset(buf, 0, (4+len+preDataLen)*sizeof(char));
+	memset(buf, 0, (len+preDataLen)*sizeof(char));
 	memcpy(buf, preData, preDataLen*sizeof(char));
 	memcpy(buf+preDataLen, data, len);
 

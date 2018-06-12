@@ -10,6 +10,13 @@ static int sock;
 
 #define rwdebug
 
+#ifdef rwdebug
+
+#include <time.h>
+#include <stdio.h>
+
+#endif
+
 int clayResolve(char* address, char* port){
 #ifdef rwdebug
 	return 0;
@@ -32,6 +39,7 @@ int clayResolve(char* address, char* port){
 
 bool clayInit(){
 #ifdef rwdebug
+	srand(time(0));
 	return true;
 #endif
 
@@ -42,9 +50,18 @@ bool clayInit(){
 
 char* clayGet(){
 #ifdef rwdebug
-	char* data = malloc(268*sizeof(char));
-	memcpy(data, "{\"id\": 0, \"result\": [\"11.7 - ETH\", \"3294\", \"215922;4436;0\", \"24255;29936;29935;29942;24000;29961;17949;29940\", \"0;0;0\", \"off;off;off;off;off;off;off;off\", \"76;100;75;100;76;100;71;100;77;100;66;80;76;100;75;100\", \"eth-eu1.nanopool.org:9999\", \"0;0;0;0\"], \"error\": null}",
-		   268*sizeof(char));
+	char debugBuf[700] = {0};
+	int size = sprintf(debugBuf,
+		"{\"id\": 0, \"result\": [\"11.7 - ETH\", \"3294\", \"215922;4436;0\", \"%d;%d;%d;%d;%d;%d;%d;%d\", \"0;0;0\", \"off;off;off;off;off;off;off;off\", \"%d;100;%d;100;%d;100;%d;100;%d;100;%d;80;%d;100;%d;100\", \"eth-eu1.nanopool.org:9999\", \"0;0;0;0\"], \"error\": null}",
+					   (int)(30000 - 1000 * (float) rand()/RAND_MAX), (int)(30000 - 1000 * (float) rand()/RAND_MAX), (int)(30000 - 1000 * (float) rand()/RAND_MAX), (int)(30000 - 1000 * (float) rand()/RAND_MAX),
+					   (int)(30000 - 1000 * (float) rand()/RAND_MAX), (int)(30000 - 1000 * (float) rand()/RAND_MAX), (int)(30000 - 1000 * (float) rand()/RAND_MAX), (int)(30000 - 1000 * (float) rand()/RAND_MAX),
+					   (int)(80 - 15 * (float) rand()/RAND_MAX), (int)(80 - 15 * (float) rand()/RAND_MAX), (int)(80 - 15 * (float) rand()/RAND_MAX), (int)(80 - 15 * (float) rand()/RAND_MAX),
+					   (int)(80 - 15 * (float) rand()/RAND_MAX), (int)(80 - 15 * (float) rand()/RAND_MAX), (int)(80 - 15 * (float) rand()/RAND_MAX), (int)(80 - 15 * (float) rand()/RAND_MAX));
+
+	char* data = malloc((size+1)*sizeof(char));
+	memset(data, 0, (size+1)*sizeof(char));
+	memcpy(data, debugBuf,
+		   size*sizeof(char));
 	return data;
 #endif
 
