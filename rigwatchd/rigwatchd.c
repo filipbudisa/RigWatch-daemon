@@ -3,11 +3,50 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <netdb.h>
+#include <zconf.h>
+#include <signal.h>
 #include "config.h"
 #include "system/amd.h"
 #include "connection.h"
 #include "miner/claymore.h"
 
+
+bool reconnect(){
+	int conCode = rigConnectionInit(panelHost, panelPort);
+	if(conCode){
+		printf("Error initializing panel connection: %s\n", gai_strerror(conCode));
+		return false;
+	}
+
+	printf("Connecting to panel... ");
+	if(!rigConnect()){
+		printf("Error: %s\n", strerror(errno));
+		return false;
+	}
+
+	printf("Connected\n");
+	return true;
+}
+
+bool work(){
+	char* data;
+	int code;
+	uint32_t report;
+	while((code = rigReceive(&report)) != -1){
+		switch(code){
+			case 0:
+			case 1:
+				data = clayGet();
+				rigSend(report, data, code);
+				free(data);
+				break;
+			case 2:
+				break;
+		}
+	}
+
+	return true;
+}
 
 int main(int argc, char* argv[]){
 	confInit();
@@ -33,19 +72,11 @@ int main(int argc, char* argv[]){
 		exit(2);
 	}
 
-	conCode = rigConnectionInit(panelHost, panelPort);
-	if(conCode){
-		printf("Error initializing panel connection: %s\n", gai_strerror(conCode));
-		exit(3);
+	while(!reconnect()){
+		printf("Retrying in a minute\n");
+		rigCleanup();
+		sleep(5);
 	}
-
-	printf("Connecting to panel... ");
-	if(!rigConnect()){
-		printf("Error: %s\n", strerror(errno));
-		exit(4);
-	}
-
-	printf("Connected\n");
 
 	printf("Registering... ");
 	char* data = clayGet();
@@ -55,25 +86,20 @@ int main(int argc, char* argv[]){
 		exit(5);
 	}
 
+	printf("\n");
+
 	rigRegister(data);
 	free(data);
 
-	int code;
-	uint32_t report;
-	while((code = rigReceive(&report)) != -1){
-		switch(code){
-			case 0:
-			case 1:
-				data = clayGet();
-				rigSend(report, data, code);
-				free(data);
-				break;
-			case 2:
-				break;
+	while(work()){
+		printf("Panel connection lost, reconnecting... ");
+
+		while(!reconnect()){
+			printf("Retrying in a minute\n");
+			rigCleanup();
+			sleep(5);
 		}
 	}
 
-	printf("Panel connection lost\n");
-
-	return 6;
+	return 0;
 }

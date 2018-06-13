@@ -4,6 +4,7 @@
 #include <memory.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <zconf.h>
 #include "config.h"
 
 static struct sockaddr *addr;
@@ -34,6 +35,10 @@ bool rigConnect(){
 	}
 
 	return true;
+}
+
+void rigCleanup(){
+	close(sock);
 }
 
 bool rSend(char* data, size_t len){
