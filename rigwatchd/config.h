@@ -10,10 +10,10 @@
  * syntax: key=val
  * no spaces around =
  * no spaces on beginning of line
- * spaces at the end of line becme part of val
+ * spaces at the end of line become part of val
  */
 
-#define CONFIG_FILE "./rigwatchd.conf"
+#define CONFIG_FILE "/etc/rigwatchd.conf"
 
 typedef enum {
 	NOSYSYSTEM,

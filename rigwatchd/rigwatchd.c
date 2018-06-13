@@ -72,10 +72,13 @@ int main(int argc, char* argv[]){
 		exit(2);
 	}
 
+	printf("Waiting a minute for miner to come online...\n");
+	sleep(60);
+
 	while(!reconnect()){
 		printf("Retrying in a minute\n");
 		rigCleanup();
-		sleep(5);
+		sleep(60);
 	}
 
 	printf("Registering... ");
@@ -97,7 +100,7 @@ int main(int argc, char* argv[]){
 		while(!reconnect()){
 			printf("Retrying in a minute\n");
 			rigCleanup();
-			sleep(5);
+			sleep(60);
 		}
 	}
 

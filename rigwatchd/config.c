@@ -17,6 +17,10 @@ bool sendData = true;
 
 void confInit(){
 	FILE* confFile = fopen(CONFIG_FILE, "r"); // TODO: conf file creation
+	if(confFile == 0){
+		printf("Error opening config file %s\n", CONFIG_FILE);
+		exit(22);
+	}
 
 	char *line, key[20], val[100];
 	size_t i = 0;

@@ -8,7 +8,7 @@
 static struct sockaddr *addr;
 static int sock;
 
-#define rwdebug
+//#define rwdebug
 
 #ifdef rwdebug
 
