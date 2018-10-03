@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <memory.h>
 #include "config.h"
+#include "rigwatchd.h"
 
 char *rigName = "";
 char *panelHost = "";
-char* panelPort = "80";
+char* panelPort = "";
 System systemType;
 Miner minerType;
 char *minerHost = "";
@@ -18,7 +19,7 @@ bool sendData = true;
 void confInit(){
 	FILE* confFile = fopen(CONFIG_FILE, "r"); // TODO: conf file creation
 	if(confFile == 0){
-		printf("Error opening config file %s\n", CONFIG_FILE);
+		rwlog("Error opening config file %s\n", CONFIG_FILE);
 		exit(22);
 	}
 
@@ -72,24 +73,8 @@ void confInit(){
 }
 
 void confCheck(){
-	if(rigName == ""){
-		printf("Rig name not set. Stats won't be sent to panel.\n");
-		sendData = false;
-	}
-	if(panelHost == ""){
-		printf("Panel URL not set. Stats won't be sent to panel.\n");
-		sendData = false;
-	}
-	if(systemType == NOSYSYSTEM){
-		printf("System type not set. GPU info won't be reported.\n");
-		reportSystem = false;
-	}
-	if(minerType == NOMINER){
-		printf("Miner not set. Mining stats won't be reported.\n");
-		reportMining = false;
-	}
-	if(minerHost == ""){
-		printf("Miner URL not set. Mining stats won't be reported.\n");
-		reportMining = false;
+	if(!strncmp(rigName, "", 1) || !strncmp(panelHost, "", 1) || !strncmp(panelPort, "", 1)){
+		rwlog(1, "Rig name, panel host or panel port missing. Aborting\n");
+		exit(3);
 	}
 }

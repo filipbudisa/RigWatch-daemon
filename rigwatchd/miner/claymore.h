@@ -6,7 +6,9 @@
 #define RIGWATCH_DAEMON_CLAYMOER_H
 
 int clayResolve(char* host, char* port);
-bool clayInit();
 char* clayGet();
+bool clayCheck();
+bool clayRestart();
+bool clayReboot();
 
 #endif //RIGWATCH_DAEMON_CLAYMOER_H

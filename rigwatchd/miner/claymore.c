@@ -19,6 +19,7 @@ static int sock;
 
 int clayResolve(char* address, char* port){
 #ifdef rwdebug
+	srand(time(0));
 	return 0;
 #endif
 
@@ -37,14 +38,19 @@ int clayResolve(char* address, char* port){
 	return 0;
 }
 
-bool clayInit(){
+bool clayCheck(){
 #ifdef rwdebug
-	srand(time(0));
 	return true;
 #endif
 
 	sock = socket(PF_INET, SOCK_STREAM, 0);
 	if(sock == -1) return false;
+
+	if(connect(sock, addr, sizeof(struct sockaddr)) == -1){
+		return false;
+	}
+
+	close(sock);
 	return true;
 }
 
@@ -64,6 +70,8 @@ char* clayGet(){
 		   size*sizeof(char));
 	return data;
 #endif
+	sock = socket(PF_INET, SOCK_STREAM, 0);
+	if(sock == -1) return 0;
 
 	if(connect(sock, addr, sizeof(struct sockaddr)) == -1){
 		return 0;
@@ -78,4 +86,42 @@ char* clayGet(){
 
 	close(sock);
 	return buf;
+}
+
+bool clayRestart(){
+#ifdef rwdebug
+	printf("Restarting\n");
+	return 1;
+#endif
+
+	sock = socket(PF_INET, SOCK_STREAM, 0);
+	if(sock == -1) return 0;
+
+	if(connect(sock, addr, sizeof(struct sockaddr)) == -1){
+		return 0;
+	}
+
+	send(sock, "{\"id\":0,\"jsonrpc\":\"2.0\",\"method\":\"miner_restart\"}", 49*sizeof(char), 0);
+	close(sock);
+
+	return 1;
+}
+
+bool clayReboot(){
+#ifdef rwdebug
+	printf("Rebooting\n");
+	return 1;
+#endif
+
+	sock = socket(PF_INET, SOCK_STREAM, 0);
+	if(sock == -1) return 0;
+
+	if(connect(sock, addr, sizeof(struct sockaddr)) == -1){
+		return 0;
+	}
+
+	send(sock, "{\"id\":0,\"jsonrpc\":\"2.0\",\"method\":\"miner_reboot\"}", 48*sizeof(char), 0);
+	close(sock);
+
+	return 1;
 }
